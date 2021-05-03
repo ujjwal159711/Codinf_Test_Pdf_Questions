@@ -1,143 +1,89 @@
-//import { Promise } from 'es6-promise';
-//global.Promise = require('es6-promise').Promise;
-
-
-
 interface Client{
     sendMessage: (message: string) => void;
     onMessage: (callback: (message: string) => void) => void;
 }
 
-type RecordMap = {                              //it is type of object
+type RecordMap = {                     
     [recordName: string]: Client
 };              
 
-class RecordTracker {
+class RecordTracker implements Client{
 
     constructor (private recordMap: RecordMap) {}
 
-    public initialize(): void {}
+    sendMessage = (msg:string):void =>{
+        console.log("Sending ping message each after 10 seconds :");
+        setInterval((x:string) => console.log(x), 10000, msg); 
+    }
+    onMessage = (callback: (message: string) => void): void => {
+        console.log("Receiving pong message sing callback function:");
+        setTimeout(() => { console.log(('pong')) }, 3000);
+    }
+
+    public initialize(cli:Client,timeOut:number): Promise<any> {
+        const pro = new Promise((resolve,reject)  => {
+            setTimeout(() => resolve('ping'),timeOut)
+            
+            cli.onMessage = this.onMessage;
+            cli.onMessage(()=>{})
+            cli.sendMessage;
+        });
+        return pro;
+    }
+
+    async asyncCall(){
+        console.log('start');
+        var result;
+        var k:string = "";
+         for (let [key,value] of Object.entries(this.recordMap)) {
+            k = key;
+            result = await this.initialize(this.recordMap[key],2000);
+            console.log(result);
+        }
+        Promise.reject(delete(this.recordMap[k]));
+        console.log('end');
+    }
 
     public getRecordMap(): RecordMap {
         return {...this.recordMap};
     }
 }
 
-//=================================================================================================================
-
-//        -------------------Sending "ping" message and "pong" message using callback-------------------
-
-function send(msg:string):void{
-    console.log("Sending ping message each after 10 seconds :");
-    setInterval((x:string) => console.log(x), 10000, msg); 
-}
-
-function call(back:(msg:string)=>void):void {
-    console.log("Receiving pong message sing callback function:");
-    const replyMessage = "Pong";
-    back(replyMessage);
-}
-
-call((msg) => {
-    console.log(msg);
-    console.log();
-});
-send("Ping");
 
 
-// call(replyCallBack);                    //   ------->    another way to call callback function
-// function replyCallBack(msg:string){
-//     console.log(msg); 
-// }
-
-
-//--------------------------------------------------------------------------------------------------------------------
-
-//         -----------------------Creating client type array for RecordMap------------------------
-
-let client1 : Client;
-let client2 : Client;
-client1 = {
-    sendMessage: send,
-    onMessage: call
-};
-client2 = {
-    sendMessage: send,
-    onMessage: call
-};
-
-let arr:Client[]=[client1,client2];
-let recordM : RecordMap = {};
-recordM = {
-    recordName:client1
-}
-//console.log(arr);
-
-
-//-----------------------------------------------------------------------------------------------------------------
-
-//                     ---------------------- Creating object of class ------------------------
-
-const obj = new RecordTracker(recordM);
-//console.log(obj.getRecordMap());
-
-
-//----------------------------------------------------------------------------------------------------------------
-
-//                 ------------------ Trying promise with ping and pong message -------------------
-
-
-// const pro = new Promise<string>((resolve,reject) => {
-//     setInterval(() => {resolve("ping");}, 10000);
-//     setTimeout(()=>{ reject("pong"); } ,2000);
-// });
-
-// pro.then(data => {
-//     ('');
-//     ('');
-// });
-
-
-//===============================================================================================================
-
-
-
-async function findActiveClients(c:Client,timeOut:number){
-    return new Promise<boolean>((resolve,reject)  => {
-        setTimeout(() => resolve(false),timeOut)
-
-        const pongMsg = (msg:any) => {
-            if(msg === 'pong') {
-                resolve(true)
-            }
+const r1:RecordMap = {
+    'clientA' : {
+        sendMessage : (msg:string) => {console.log(msg)},
+        onMessage : (callback:(msg:string) => void) => {
+            console.log(('pong'));
         }
-        c.onMessage = pongMsg;
-        c.sendMessage('ping');
-    });
+    },
+    'clientB' : {
+        sendMessage : (msg:string) => {console.log(msg)},
+        onMessage : (callback:(msg:string) => void) => {
+            console.log(('pong'));
+        }
+    },
+    'clientC' : {
+        sendMessage : (msg:string) => {console.log(msg)},
+        onMessage : (callback:(msg:string) => void) => {
+            console.log(('pong'));
+        }
+    },
+    'clientD' : {
+        sendMessage : (msg:string) => {console.log(msg)},
+        onMessage : (callback:(msg:string) => void) => {
+            console.log(('pong'));
+        }
+    }
 }
 
-//-------------------------------------------------------------------------------
+const obj = new RecordTracker(r1);
 
-// function activeClients(client,timeOut){
-//     return new Promise<boolean>((resolve,reject)  => {
-//         setTimeout(() => resolve(false),timeOut)
+obj.asyncCall();
+console.log(obj.getRecordMap());
+obj.onMessage(()=>{console.log()});
 
-//         const pongReceiver = ( msg ) => {
-//             if(msg === 'pong') {
-//                 resolve(true)
-//             }
-//         }
-//         client.onMessage = pongReceiver;
-//         client.sendMessage('ping');
-//     });
-//     //return pro;
-// }
-
-// async function result() {
-//     const pro = await activeClients();
-// }
-
-// console.log(activeClients(client1,10000));
 
 
 
