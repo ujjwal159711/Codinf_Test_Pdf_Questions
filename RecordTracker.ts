@@ -1,4 +1,7 @@
-import {Promise} from 'es6-promise';
+//import { Promise } from 'es6-promise';
+//global.Promise = require('es6-promise').Promise;
+
+
 
 interface Client{
     sendMessage: (message: string) => void;
@@ -81,21 +84,60 @@ const obj = new RecordTracker(recordM);
 
 //----------------------------------------------------------------------------------------------------------------
 
-//                 ------------------ Trying promise with ping and pong message --------------------
+//                 ------------------ Trying promise with ping and pong message -------------------
 
 
-const pro :Promise<string> = new Promise((resolve,reject) => {
-    setInterval(() => {resolve("ping");}, 10000);
-    setTimeout(()=>{ reject("pong"); } ,2000);
-});
+// const pro = new Promise<string>((resolve,reject) => {
+//     setInterval(() => {resolve("ping");}, 10000);
+//     setTimeout(()=>{ reject("pong"); } ,2000);
+// });
 
-pro.then(data => {
-    ('');
-    ('');
-});
+// pro.then(data => {
+//     ('');
+//     ('');
+// });
 
 
 //===============================================================================================================
+
+
+
+async function findActiveClients(c:Client,timeOut:number){
+    return new Promise<boolean>((resolve,reject)  => {
+        setTimeout(() => resolve(false),timeOut)
+
+        const pongMsg = (msg:any) => {
+            if(msg === 'pong') {
+                resolve(true)
+            }
+        }
+        c.onMessage = pongMsg;
+        c.sendMessage('ping');
+    });
+}
+
+//-------------------------------------------------------------------------------
+
+// function activeClients(client,timeOut){
+//     return new Promise<boolean>((resolve,reject)  => {
+//         setTimeout(() => resolve(false),timeOut)
+
+//         const pongReceiver = ( msg ) => {
+//             if(msg === 'pong') {
+//                 resolve(true)
+//             }
+//         }
+//         client.onMessage = pongReceiver;
+//         client.sendMessage('ping');
+//     });
+//     //return pro;
+// }
+
+// async function result() {
+//     const pro = await activeClients();
+// }
+
+// console.log(activeClients(client1,10000));
 
 
 
