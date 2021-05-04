@@ -7,40 +7,36 @@ type RecordMap = {
     [recordName: string]: Client
 };              
 
-class RecordTracker implements Client{
+class RecordTracker {
 
     constructor (private recordMap: RecordMap) {}
 
-    sendMessage = (msg:string):void =>{
-        console.log("Sending ping message each after 10 seconds :");
-        setInterval((x:string) => console.log(x), 10000, msg); 
-    }
-    onMessage = (callback: (message: string) => void): void => {
-        console.log("Receiving pong message sing callback function:");
-        setTimeout(() => { console.log(('pong')) }, 3000);
+    public initialize():void{
+        this.asyncCall();
     }
 
-    public initialize(cli:Client,timeOut:number): Promise<any> {
-        const pro = new Promise((resolve,reject)  => {
-            setTimeout(() => resolve('ping'),timeOut)
-            
-            cli.onMessage = this.onMessage;
-            cli.onMessage(()=>{})
-            cli.sendMessage;
+    private fun(c:Client):Promise<any>{
+        return new Promise((resolve,reject)  => {
+            resolve(c.sendMessage('ping'))
+            setTimeout(() => {c.onMessage(callbackCall);},10000)
         });
-        return pro;
     }
 
-    async asyncCall(){
+    private responseCheck(responseValue:any){
+        if(responseValue === undefined){
+            delete r1['clientA'];
+        }
+    }
+
+    private async asyncCall(){
         console.log('start');
         var result;
         var k:string = "";
-         for (let [key,value] of Object.entries(this.recordMap)) {
+        for (let [key,value] of Object.entries(this.recordMap)) {
             k = key;
-            result = await this.initialize(this.recordMap[key],2000);
-            console.log(result);
+            result = await this.fun(this.recordMap[key]);
         }
-        Promise.reject(delete(this.recordMap[k]));
+        //console.log(result);
         console.log('end');
     }
 
@@ -53,36 +49,58 @@ class RecordTracker implements Client{
 
 const r1:RecordMap = {
     'clientA' : {
-        sendMessage : (msg:string) => {console.log(msg)},
+        sendMessage : (msg:string) => {
+            setInterval(() => {console.log(msg);}, 10000);
+        },
         onMessage : (callback:(msg:string) => void) => {
-            console.log(('pong'));
+            callback('pong');
         }
     },
+
     'clientB' : {
-        sendMessage : (msg:string) => {console.log(msg)},
+        sendMessage : (msg:string) => {
+            setInterval(() => {console.log(msg);}, 10000);
+        },
         onMessage : (callback:(msg:string) => void) => {
-            console.log(('pong'));
+            callback('pong');
         }
     },
+
     'clientC' : {
-        sendMessage : (msg:string) => {console.log(msg)},
+        sendMessage : (msg:string) => {
+            setInterval(() => {console.log(msg);}, 10000);
+        },
         onMessage : (callback:(msg:string) => void) => {
-            console.log(('pong'));
+            callback('pong');
         }
     },
+
     'clientD' : {
-        sendMessage : (msg:string) => {console.log(msg)},
+        sendMessage : (msg:string) => {
+            setInterval(() => {console.log(msg);}, 10000);
+        },
         onMessage : (callback:(msg:string) => void) => {
-            console.log(('pong'));
+            callback(undefined);
         }
     }
 }
 
+
+
+const callbackCall = (msg:string) :void => {
+    setTimeout(()=>{ console.log(msg);}, 3000);
+}
+
+
 const obj = new RecordTracker(r1);
 
-obj.asyncCall();
-console.log(obj.getRecordMap());
-obj.onMessage(()=>{console.log()});
+obj.initialize();
+//console.log(obj.getRecordMap());
+
+
+
+
+
 
 
 
