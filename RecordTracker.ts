@@ -3,41 +3,49 @@ interface Client{
     onMessage: (callback: (message: string) => void) => void;
 }
 
+
 type RecordMap = {                     
     [recordName: string]: Client
-};              
+};   
+
 
 class RecordTracker {
 
     constructor (private recordMap: RecordMap) {}
 
     public initialize():void{
-        this.asyncCall();
+        console.log('Sending ping message to all clients in 10 seconds');
+        setInterval(() => {this.asynchornousFunction();}, 10000);
     }
 
-    private fun(c:Client):Promise<any>{
+    private async asynchornousFunction(){
+        var clientName:string = "";
+        for (let [key,value] of Object.entries(this.recordMap)) {
+            this.recordMap[key].sendMessage('ping');
+            clientName = key;
+            await this.promiseFunction(this.recordMap[key],clientName);
+        }
+    }
+
+    private promiseFunction(client:Client,clientName:string):Promise<any>{
         return new Promise((resolve,reject)  => {
-            resolve(c.sendMessage('ping'))
-            setTimeout(() => {c.onMessage(callbackCall);},10000)
+            resolve(false)
+            const callbackCall = (msg:string) :void => {
+                if(msg === 'pong'){
+                    setTimeout(() => {console.log(msg);},3000);
+                    resolve(true)
+                }
+                else{
+                    reject(setTimeout(()=>{this.deleteRecordFromMap(clientName)},3000))
+                }
+            }
+            client.onMessage(callbackCall);
         });
     }
 
-    private responseCheck(responseValue:any){
-        if(responseValue === undefined){
-            delete r1['clientA'];
-        }
-    }
-
-    private async asyncCall(){
-        console.log('start');
-        var result;
-        var k:string = "";
-        for (let [key,value] of Object.entries(this.recordMap)) {
-            k = key;
-            result = await this.fun(this.recordMap[key]);
-        }
-        //console.log(result);
-        console.log('end');
+    private deleteRecordFromMap(responseValue:string){
+        delete this.recordMap[responseValue];
+        console.log(responseValue + " is not active");
     }
 
     public getRecordMap(): RecordMap {
@@ -47,10 +55,11 @@ class RecordTracker {
 
 
 
-const r1:RecordMap = {
+const record1:RecordMap = {
+    
     'clientA' : {
         sendMessage : (msg:string) => {
-            setInterval(() => {console.log(msg);}, 10000);
+            console.log(msg);
         },
         onMessage : (callback:(msg:string) => void) => {
             callback('pong');
@@ -59,16 +68,16 @@ const r1:RecordMap = {
 
     'clientB' : {
         sendMessage : (msg:string) => {
-            setInterval(() => {console.log(msg);}, 10000);
+            console.log(msg);
         },
         onMessage : (callback:(msg:string) => void) => {
-            callback('pong');
+            callback(undefined);
         }
     },
 
     'clientC' : {
         sendMessage : (msg:string) => {
-            setInterval(() => {console.log(msg);}, 10000);
+            console.log(msg);
         },
         onMessage : (callback:(msg:string) => void) => {
             callback('pong');
@@ -77,25 +86,21 @@ const r1:RecordMap = {
 
     'clientD' : {
         sendMessage : (msg:string) => {
-            setInterval(() => {console.log(msg);}, 10000);
+            console.log(msg);
         },
         onMessage : (callback:(msg:string) => void) => {
-            callback(undefined);
+            callback('not-active');
         }
     }
 }
 
-
-
-const callbackCall = (msg:string) :void => {
-    setTimeout(()=>{ console.log(msg);}, 3000);
-}
-
-
-const obj = new RecordTracker(r1);
-
+const obj = new RecordTracker(record1);
+console.log(obj.getRecordMap());
 obj.initialize();
-//console.log(obj.getRecordMap());
+
+
+
+
 
 
 
