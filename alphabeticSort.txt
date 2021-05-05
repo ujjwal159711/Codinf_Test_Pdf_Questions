@@ -1,6 +1,6 @@
 var x = "hello";
 console.log(sort_alpha(x));
-//console.log(x.split(''));
+
 
 function sort_alpha(y){
     var strArr = y.split('');
@@ -13,6 +13,5 @@ function sort_alpha(y){
         }
       }
     }
-    //return strArr;
     return strArr.join('');
 }
