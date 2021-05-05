@@ -15,10 +15,10 @@ class RecordTracker {
 
     public initialize():void{
         console.log('Sending ping message to all clients in 10 seconds');
-        setInterval(() => {this.asynchornousFunction();}, 10000);
+        setInterval(() => {this.asynchornousFunction();}, 10000);                  //to call asynchornousFunction() for every client after every 10 seconds
     }
 
-    private async asynchornousFunction(){
+    private async asynchornousFunction(){                        //async function to call promiseFunction() for every client and waiting for the response
         var clientName:string = "";
         for (let [key,value] of Object.entries(this.recordMap)) {
             this.recordMap[key].sendMessage('ping');
@@ -27,23 +27,23 @@ class RecordTracker {
         }
     }
 
-    private promiseFunction(client:Client,clientName:string):Promise<any>{
+    private promiseFunction(client:Client,clientName:string):Promise<any>{                    //function using promises to check client replies
         return new Promise((resolve,reject)  => {
             resolve(false)
             const callbackCall = (msg:string) :void => {
                 if(msg === 'pong'){
-                    setTimeout(() => {console.log(msg);},3000);
+                    setTimeout(() => {console.log(msg);},3000);                            //printing reply of the clients after 3 seconds if it is "pong"
                     resolve(true)
                 }
                 else{
-                    reject(setTimeout(()=>{this.deleteRecordFromMap(clientName)},3000))
+                    reject(setTimeout(()=>{this.deleteRecordFromMap(clientName)},3000))      //calling deleteRecordFromMap() if reply is not "pong"
                 }
             }
-            client.onMessage(callbackCall);
+            client.onMessage(callbackCall);                                   //calling callback function of onMessage property
         });
     }
 
-    private deleteRecordFromMap(responseValue:string){
+    private deleteRecordFromMap(responseValue:string){        //method to delete the record of that client from map who is not active
         delete this.recordMap[responseValue];
         console.log(responseValue + " is not active");
     }
@@ -55,9 +55,9 @@ class RecordTracker {
 
 
 
-const record1:RecordMap = {
+const record1:RecordMap = {                                  //map of type RecordMap
     
-    'clientA' : {
+    'clientA' : {                                             //client name is key and its value is of type Client
         sendMessage : (msg:string) => {
             console.log(msg);
         },
@@ -94,10 +94,9 @@ const record1:RecordMap = {
     }
 }
 
-const obj = new RecordTracker(record1);
-console.log(obj.getRecordMap());
-obj.initialize();
-
+const recordTracker1 = new RecordTracker(record1);           //object of class
+console.log(recordTracker1.getRecordMap());                  //calling getRecordMap()
+recordTracker1.initialize();                                 //calling initialize()
 
 
 
