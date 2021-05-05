@@ -1,0 +1,14 @@
+ALGORITHM or STEPS followed for this question:
+
+STEP 1 -  Start
+STEP 2 -  Creating "record1" map of RecordMap type with key as string value storing "client name" and its value of type "Client" interface.
+STEP 3 -  In the "initialize()" of "RecordTracker" class, "asynchronoursFunction()", a private method of the class is called after every 10 seconds using setInterval() 	  because the messages are to be sent to every client after 10 seconds.
+STEP 4 -  In "asynchronoursFunction()", a for loop has been used to iterate through every client of record1 map and get response of every cient.
+STEP 5 -  Inside the loop we are sending "ping" message to every client by accessing "sendMessage" property of every client present in the map.
+STEP 6 -  As we are using async function, so after sending "ping" messaage we use "await" to wait for 3 seconds for active client to respond with "pong" message.
+STEP 7 -  For observing the client response we call "promiseFunction()" that uses promises to check the reply by the clients.
+STEP 8 -  In promiseFunction(), we receive a client name which is the key in record1 map and value.
+STEP 9 -  After that, we write promise where we are checking if message being replied by client is "pong" than print the message after 3 seconds and it is done using 	          callback functions.
+STEP 10 - If reply received is not "pong" the call "deleteRecordFromMap()" in which client name is send as parameter, to delete that record from map because that 	  client is not active.
+STEP 11 - Create an object "recordTracker1" of class RecordTracker and call initialize() and getRecordMap().
+STEP 12 - End
